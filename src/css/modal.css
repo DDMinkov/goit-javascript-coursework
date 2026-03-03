@@ -1,0 +1,243 @@
+.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* --- Backdrop --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(36, 36, 36, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+/* --- Main Container --- */
+.exercise-modal-content {
+  background-color: #242424; 
+  color: #F4F4F4;
+  width: 90%;
+  max-width: 716px; 
+  border-radius: 20px;
+  padding: 40px;
+  position: relative; 
+}
+
+/* --- Styled Close Button --- */
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.modal-close-btn svg {
+  stroke: #F4F4F4; /* Ensure the X icon is visible */
+  fill: none;
+}
+
+/* --- Layout Wrapper --- */
+.modal-body-wrapper {
+  display: flex;
+  gap: 32px;
+}
+
+/* --- Image: Fixed Squish --- */
+.modal-img-container {
+  flex-shrink: 0; 
+  width: 295px;
+  height: 295px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #EAEAEA; 
+}
+
+.modal-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+/* --- Info Column --- */
+.modal-info-container {
+  flex-grow: 1;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.modal-rating-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+/* --- Stats Row --- */
+.modal-stats-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-top: 1px solid rgba(244, 244, 244, 0.2);
+  border-bottom: 1px solid rgba(244, 244, 244, 0.2);
+  padding: 10px 0;
+  margin-bottom: 16px;
+}
+
+.stats-item {
+  font-size: 12px;
+  color: rgba(244, 244, 244, 0.5);
+}
+
+.stats-item span {
+  color: #F4F4F4;
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.modal-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(244, 244, 244, 0.6);
+  margin-bottom: 32px;
+}
+
+/* --- Buttons (Search Style) --- */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* --- Search Bar Sizing Fix --- */
+.search-container {
+  position: relative;
+  max-width: 272px; /* Matches the compact design */
+  width: 100%;
+}
+
+/* --- Action Buttons (Shared "Send" Style) --- */
+.add-fav-btn,
+.give-rating-btn,
+.send-rating-btn {
+  background-color: transparent; 
+  color: #F4F4F4; 
+  border: 1px solid rgba(244, 244, 244, 0.4); 
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+}
+
+/* Hover state: Fills with white and flips text to dark */
+.add-fav-btn:hover,
+.give-rating-btn:hover,
+.send-rating-btn:hover {
+  background-color: #F4F4F4;
+  color: #242424;
+  border-color: #F4F4F4;
+}
+
+/* Ensure Send button takes full width in the rating modal */
+.send-rating-btn {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* --- Rating Specific Styles --- */
+.rating-modal-content {
+  max-width: 430px; /* Rating modal is narrower */
+  padding: 40px;
+}
+
+.rating-label {
+  color: rgba(244, 244, 244, 0.4);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.rating-selection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.rating-input {
+  width: 90%;
+  background: transparent;
+  border: 1px solid rgba(244, 244, 244, 0.3);
+  border-radius: 30px;
+  padding: 12px 18px;
+  color: #F4F4F4;
+  margin-bottom: 16px;
+  outline: none;
+}
+
+.rating-textarea {
+  border-radius: 15px;
+  height: 120px;
+  resize: none;
+}
+
+@media screen and (max-width: 767px) {
+  .exercise-modal-content {
+    padding: 40px 20px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-body-wrapper {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .modal-img-container {
+    width: 100%;
+    max-width: 295px; 
+    height: 295px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    margin-top: 10px;
+  }
+
+  .modal-stats-list {
+    gap: 15px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .add-fav-btn,
+  .give-rating-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

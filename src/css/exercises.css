@@ -196,6 +196,10 @@
   transition: color 250ms ease;
 }
 
+.filter-btn:hover {
+  color: #242424;
+}
+
 .filter-btn.active {
   color: #242424;
 }

@@ -43,14 +43,22 @@
   color: #F4F4F4;
 }
 
+/* Secondary Button: Starts Outlined */
 .subscribe-form button {
-  background-color: #F4F4F4;
-  color: #242424;
-  border: none;
+  background-color: transparent; 
+  color: #F4F4F4; 
+  border: 1px solid rgba(244, 244, 244, 0.4); /* White outline */
+  padding: 12px 28px;
   border-radius: 30px;
-  padding: 14px;
-  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
+  transition: background-color 250ms ease, border-color 250ms ease;
+}
+
+.subscribe-form button:hover {
+  background-color: #F4F4F4; /* Fills with White on hover */
+  color: #242424;            /* Text flips to Black */
+  border-color: #F4F4F4;
 }
 
 .footer-bottom {

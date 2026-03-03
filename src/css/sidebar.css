@@ -1,0 +1,104 @@
+/* --- Main Layout Wrapper --- */
+.main-layout {
+  display: flex;
+  gap: 32px;
+  padding-top: 40px;
+  align-items: flex-start; /* Prevents sidebar from stretching vertically */
+}
+
+/* --- Sidebar Wrapper --- */
+.sidebar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 444px; /* Matches your fixed width */
+  flex-shrink: 0; /* Prevents the grid from crushing the sidebar */
+  margin-top: 76px; /* Your preferred vertical alignment */
+}
+
+/* Ensure the exercise section grows to fill remaining space */
+.exercises-section {
+  flex-grow: 1;
+  min-width: 0; /* Critical for preventing grid overflow from pushing the sidebar */
+}
+
+/* --- Quote Card Styling --- */
+.quote-card {
+  background-color: #242424;
+  border-radius: 30px;
+  padding: 40px;
+  color: #F4F4F4;
+}
+
+.quote-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.quote-icon-container {
+  background-color: #F4F4F4;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quote-run-icon {
+  fill: #242424;
+}
+
+.quote-symbol {
+  margin-left: auto;
+  fill: rgba(244, 244, 244, 0.5);
+}
+
+.quote-text {
+  font-size: 14px;
+  line-height: 1.28;
+  color: rgba(244, 244, 244, 0.8);
+  margin-bottom: 16px;
+}
+
+.quote-author {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* --- Daily Norm Styling --- */
+.daily-norm-card {
+  background-color: #F4F4F4;
+  border-radius: 30px;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Placeholder for promo image seen in design */
+.sidebar-promo-img {
+  width: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.sidebar-promo-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* --- MOBILE HIDING LOGIC --- */
+@media screen and (max-width: 767px) {
+  .sidebar-wrapper {
+    display: none; /* Sidebar disappears on mobile */
+  }
+  
+  .main-layout {
+    display: block; /* Stack content normally for small screens */
+    padding-top: 20px;
+  }
+}

@@ -1,8 +1,11 @@
+import { initHeader } from './js/header.js';
 import { initQuote } from './js/quote.js';
 import { initExercises } from './js/exercises.js';
+import './js/exercise-modal.js';
+import './js/favorites-page.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("Your Energy App Initialized");
+  initHeader();
   initQuote();
   initExercises();
 });

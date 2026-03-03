@@ -28,8 +28,12 @@
   }
 
   .nav-link {
-    padding: 8px 12px; /* Reduce padding in the pill switcher */
+    padding: 6px 12px; /* Reduce padding in the pill switcher */
     font-size: 12px;
+  }
+
+  .nav-switcher {
+    margin-left: auto; 
   }
 }
 

@@ -10,7 +10,9 @@
 @import url('./container.css');
 @import url('./animations.css');
 @import url('./exercises.css');
+@import './modal.css';
 
 /* Sections style */
 @import url('./header.css');
+@import url('./sidebar.css');
 @import url('./footer.css');
