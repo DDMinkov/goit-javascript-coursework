@@ -302,3 +302,38 @@
 .category-accent {
   color: rgba(36, 36, 36, 0.5);
 }
+
+/* --- Pagination (Screenshot Style) --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.page-btn {
+  background: none;
+  border: none;
+  font-size: 24px; /* Matches the larger scale in your image */
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(36, 36, 36, 0.2); /* Very light gray for inactive numbers */
+  transition: color 250ms ease;
+}
+
+.page-btn.active {
+  color: #242424; /* Dark text for active number */
+  border: 1.5px solid #242424; /* The thin black circle */
+  border-radius: 50%;
+}
+
+.page-btn:hover:not(.active) {
+  color: rgba(36, 36, 36, 0.5);
+}

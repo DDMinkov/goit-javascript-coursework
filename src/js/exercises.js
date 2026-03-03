@@ -4,64 +4,105 @@ const exerciseGrid = document.getElementById('exercise-grid');
 const filterList = document.getElementById('filter-list');
 const titleElem = document.getElementById('exercises-title');
 const searchForm = document.getElementById('search-form');
+const paginationContainer = document.getElementById('pagination');
+
+// Track current view state
+let currentState = {
+  view: 'categories', // 'categories' or 'exercises'
+  filter: 'Muscles',
+  category: '',
+  keyword: '',
+  page: 1,
+  limit: 12 // Adjusted for better grid symmetry
+};
 
 export async function initExercises() {
-  loadCategories('Muscles'); // Initial load
+  loadCategories(); // Initial load
 
-  // 1. Filter Buttons Listener (Independent)
+  // 1. Filter Buttons
   filterList.addEventListener('click', (e) => {
     if (e.target.tagName !== 'BUTTON') return;
 
-    // Toggle Active Class for Animated Underline
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     e.target.classList.add('active');
 
+    currentState.view = 'categories';
+    currentState.filter = e.target.dataset.filter;
+    currentState.page = 1;
+    
     resetView();
-    loadCategories(e.target.dataset.filter);
+    loadCategories();
   });
 
-  // 2. Search Form Submit (Independent)
-  searchForm.addEventListener('submit', async (e) => {
+  // 2. Search Form
+  searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    const keyword = e.target.elements.keyword.value.trim();
-    const activeBtn = document.querySelector('.filter-btn.active');
-    const filter = activeBtn ? activeBtn.dataset.filter : 'Muscles';
-    const category = titleElem.querySelector('.category-accent')?.textContent;
-
-    if (!keyword) return;
-
-    const sanitizedFilter = filter.toLowerCase().replace(' ', '');
-    try {
-      const data = await fetchExercises({
-        [sanitizedFilter]: category,
-        keyword: keyword,
-        page: 1,
-        limit: 10
-      });
-      renderExercises(data.results);
-    } catch (err) {
-      console.error(err);
-    }
+    currentState.keyword = e.target.elements.keyword.value.trim();
+    currentState.page = 1;
+    loadExercises();
   });
 
   // 3. Category Card Click
-  exerciseGrid.addEventListener('click', async (e) => {
+  exerciseGrid.addEventListener('click', (e) => {
     const card = e.target.closest('.category-item');
     if (!card) return;
 
-    const category = card.dataset.name;
-    const activeBtn = document.querySelector('.filter-btn.active');
-    const filter = activeBtn ? activeBtn.dataset.filter : 'Muscles';
+    currentState.view = 'exercises';
+    currentState.category = card.dataset.name;
+    currentState.page = 1;
+    currentState.keyword = '';
+    
+    switchToExercisesView();
+  });
 
-    switchToExercises(filter, category);
+  // 4. Pagination Click
+  paginationContainer.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('page-btn')) return;
+    
+    currentState.page = parseInt(e.target.dataset.page);
+    
+    if (currentState.view === 'categories') {
+      loadCategories();
+    } else {
+      loadExercises();
+    }
+    
+    // Smooth scroll back to top of grid
+    window.scrollTo({ top: exerciseGrid.offsetTop - 100, behavior: 'smooth' });
   });
 }
 
-function resetView() {
-  titleElem.textContent = "Exercises";
-  searchForm.classList.add('is-hidden');
-  searchForm.reset(); 
+async function loadCategories() {
+  try {
+    const data = await fetchCategories(currentState.filter, currentState.page, currentState.limit);
+    renderCategories(data.results);
+    renderPagination(data.totalPages);
+  } catch (err) { console.error(err); }
+}
+
+async function loadExercises() {
+  const sanitizedFilter = currentState.filter.toLowerCase().replace(' ', '');
+  try {
+    const data = await fetchExercises({
+      [sanitizedFilter]: currentState.category,
+      keyword: currentState.keyword,
+      page: currentState.page,
+      limit: 10
+    });
+    renderExercises(data.results);
+    renderPagination(data.totalPages);
+  } catch (err) { console.error(err); }
+}
+
+function renderCategories(categories) {
+  exerciseGrid.innerHTML = categories.map(item => `
+    <li class="category-item" data-name="${item.name}">
+      <div class="category-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${item.imgURL}')">
+         <h3>${item.name}</h3>
+         <p>${item.filter}</p>
+      </div>
+    </li>
+  `).join('');
 }
 
 function renderExercises(exercises) {
@@ -69,7 +110,6 @@ function renderExercises(exercises) {
     exerciseGrid.innerHTML = `<li class="no-results">No exercises found.</li>`;
     return;
   }
-
   exerciseGrid.innerHTML = exercises.map(ex => `
     <li class="exercise-card">
       <div class="card-top">
@@ -87,35 +127,28 @@ function renderExercises(exercises) {
   `).join('');
 }
 
-async function switchToExercises(filter, category) {
-  titleElem.innerHTML = `Exercises / <span class="category-accent">${category}</span>`;
-  searchForm.classList.remove('is-hidden'); 
-
-  const sanitizedFilter = filter.toLowerCase().replace(' ', '');
-  try {
-    const data = await fetchExercises({
-      [sanitizedFilter]: category,
-      page: 1,
-      limit: 10
-    });
-    renderExercises(data.results);
-  } catch (err) {
-    console.error(err);
+function renderPagination(totalPages) {
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
   }
+
+  let buttons = '';
+  for (let i = 1; i <= totalPages; i++) {
+    buttons += `<button class="page-btn ${i === currentState.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  paginationContainer.innerHTML = buttons;
 }
 
-async function loadCategories(filter) {
-  try {
-    const data = await fetchCategories(filter);
-    exerciseGrid.innerHTML = data.results.map(item => `
-      <li class="category-item" data-name="${item.name}">
-        <div class="category-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${item.imgURL}')">
-           <h3>${item.name}</h3>
-           <p>${item.filter}</p>
-        </div>
-      </li>
-    `).join('');
-  } catch (err) {
-    console.error(err);
-  }
+function resetView() {
+  titleElem.textContent = "Exercises";
+  searchForm.classList.add('is-hidden');
+  searchForm.reset();
+  currentState.keyword = '';
+}
+
+function switchToExercisesView() {
+  titleElem.innerHTML = `Exercises / <span class="category-accent">${currentState.category}</span>`;
+  searchForm.classList.remove('is-hidden');
+  loadExercises();
 }
