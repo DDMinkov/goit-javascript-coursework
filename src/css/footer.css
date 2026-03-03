@@ -95,3 +95,28 @@
   transform: translateY(-2px);
   background-color: rgba(244, 244, 244, 0.1);
 }
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .footer-slogan {
+    font-size: 28px; /* Shrink the massive text so it doesn't break lines awkwardly */
+    max-width: 100%;
+  }
+
+  .footer-search-style {
+    max-width: 100%; /* Form takes full width on mobile */
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+}
