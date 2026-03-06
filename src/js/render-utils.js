@@ -5,7 +5,7 @@ export function createExerciseCardHtml(ex, isFavoriteView = false) {
     ? `<button class="delete-btn" data-id="${ex._id}" aria-label="Remove">
          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
        </button>`
-    : `<span class="rating">${ex.rating.toFixed(1)} <svg width="18" height="18"><use href="./img/ratestar.svg"></use></svg></span>`;
+    : `<span class="rating">${ex.rating.toFixed(1)} <svg width="18" height="18"><use href="./img/sprite.svg#icon-ratestar"></use></svg></span>`;
 
   return `
     <li class="exercise-card">
@@ -20,7 +20,7 @@ export function createExerciseCardHtml(ex, isFavoriteView = false) {
       
       <div class="exercise-title-container">
         <div class="exercise-icon-container">
-          <svg width="24" height="24"><use href="./img/exec.svg"></use></svg>
+          <svg width="24" height="24"><use href="./img/sprite.svg#icon-exec"></use></svg>
         </div>
         <h3 class="exercise-name">${capitalizedName}</h3>
       </div>

@@ -42,7 +42,7 @@
 }
 
 .modal-close-btn svg {
-  stroke: #F4F4F4; /* Ensure the X icon is visible */
+  color: #F4F4F4; /* Ensure the X icon is visible */
   fill: none;
 }
 

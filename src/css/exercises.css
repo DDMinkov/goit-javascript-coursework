@@ -378,7 +378,7 @@
 
 .rating svg {
   fill: #EEA10C;
-  margin-top: 4px; /* Shifts the star down to sit on the text baseline */
+  margin-bottom: 2px; /* Shifts the star down to sit on the text baseline */
   display: block;  /* Removes extra whitespace below the SVG */
 }
 
