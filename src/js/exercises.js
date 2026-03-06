@@ -1,4 +1,5 @@
 import { fetchCategories, fetchExercises } from './api.js';
+import { createExerciseCardHtml } from './render-utils.js';
 
 const exerciseGrid = document.getElementById('exercise-grid');
 const filterList = document.getElementById('filter-list');
@@ -110,21 +111,9 @@ function renderExercises(exercises) {
     exerciseGrid.innerHTML = `<li class="no-results">No exercises found.</li>`;
     return;
   }
-  exerciseGrid.innerHTML = exercises.map(ex => `
-    <li class="exercise-card">
-      <div class="card-top">
-        <span class="workout-tag">WORKOUT</span>
-        <span class="rating">${ex.rating.toFixed(1)} ⭐</span>
-        <button class="start-btn" data-id="${ex._id}">Start ➔</button>
-      </div>
-      <h3 class="exercise-name">${ex.name}</h3>
-      <div class="card-info">
-        <p><span>Burned calories:</span> ${ex.burnedCalories} / 3 min</p>
-        <p><span>Body part:</span> ${ex.bodyPart}</p>
-        <p><span>Target:</span> ${ex.target}</p>
-      </div>
-    </li>
-  `).join('');
+  
+  // Use the shared helper (isFavoriteView = false)
+  exerciseGrid.innerHTML = exercises.map(ex => createExerciseCardHtml(ex, false)).join('');
 }
 
 function renderPagination(totalPages) {

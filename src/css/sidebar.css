@@ -11,21 +11,29 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 444px; /* Matches your fixed width */
-  flex-shrink: 0; /* Prevents the grid from crushing the sidebar */
-  margin-top: 76px; /* Your preferred vertical alignment */
+  width: 444px; /* Fixed width from Figma */
+  flex-shrink: 0;
+  margin-top: 76px;
+  box-sizing: border-box; /* Ensures padding doesn't increase this 444px width */
 }
 
 /* Ensure the exercise section grows to fill remaining space */
 .exercises-section {
   flex-grow: 1;
-  min-width: 0; /* Critical for preventing grid overflow from pushing the sidebar */
+  min-width: 0;
+}
+
+/* --- Shared Card Logic --- */
+.quote-card,
+.daily-norm-card {
+  width: 100%; /* Force both cards to match the 444px wrapper */
+  box-sizing: border-box; /* Critical: keeps 40px padding inside the 444px width */
+  border-radius: 30px;
 }
 
 /* --- Quote Card Styling --- */
 .quote-card {
   background-color: #242424;
-  border-radius: 30px;
   padding: 40px;
   color: #F4F4F4;
 }
@@ -45,6 +53,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .quote-run-icon {
@@ -68,37 +77,94 @@
   font-weight: 500;
 }
 
-/* --- Daily Norm Styling --- */
-.daily-norm-card {
-  background-color: #F4F4F4;
-  border-radius: 30px;
-  padding: 20px 40px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Placeholder for promo image seen in design */
+/* --- Promo Image Applet --- */
 .sidebar-promo-img {
-  width: 100%;
+  width: 100%; /* Match the 444px width */
   border-radius: 30px;
   overflow: hidden;
 }
 
 .sidebar-promo-img img {
-  width: 100%;
+  width: 100%; /* Force image to fill container exactly */
   height: auto;
-  display: block;
+  display: block; /* Removes bottom whitespace gap */
+  object-fit: cover;
 }
 
-/* --- MOBILE HIDING LOGIC --- */
+/* --- Daily Norm Applet - Custom Styling --- */
+.daily-norm-card {
+  background-color: #FFFFFF; /* Pure white as requested */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* Space between header and description */
+  height: auto; /* Grows to fit WHO text */
+}
+
+.daily-norm-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.daily-icon-circle {
+  background-color: #242424; 
+  flex-shrink: 0;
+}
+
+.daily-icon-svg {
+  fill: #FFFFFF;
+}
+
+.daily-norm-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.daily-norm-value {
+  color: #242424;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.daily-norm-label {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.daily-norm-description {
+  color: rgba(36, 36, 36, 0.8);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- Mobile Layout Logic --- */
 @media screen and (max-width: 767px) {
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    gap: 40px;
+  }
+
+  .exercises-section { 
+    order: 1; 
+    width: 100%; 
+  }
+
   .sidebar-wrapper {
-    display: none; /* Sidebar disappears on mobile */
+    order: 2; /* Sidebar drops below exercises */
+    display: flex;
+    width: 100%; /* Full width on mobile */
+    margin-top: 0;
+    gap: 20px;
   }
   
-  .main-layout {
-    display: block; /* Stack content normally for small screens */
-    padding-top: 20px;
+  .daily-norm-card, .quote-card {
+    padding: 20px; /* Slimmer for small screens */
   }
 }

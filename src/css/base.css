@@ -30,3 +30,15 @@ main {
 main:has(.back-link) {
   text-align: center;
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden; /* Prevents the 'shake' globally */
+  position: relative;
+  width: 100%;
+}

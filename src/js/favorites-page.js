@@ -1,81 +1,68 @@
-import { initQuote } from './quote.js';
+import { createExerciseCardHtml } from './render-utils.js'; //
 
 const STORAGE_KEY = 'favorite-exercises';
+const apiBase = "https://your-energy.b.goit.study/api/exercises";
 
-document.addEventListener('DOMContentLoaded', () => {
-  initQuote(); // Initialize the quote in the sidebar
-  renderFavorites();
-  initDeleteListeners();
+document.addEventListener('DOMContentLoaded', async () => {
+  await renderFavorites();
 });
 
-export function renderFavorites() {
+export async function renderFavorites() {
   const container = document.getElementById('favorites-grid');
   const emptyState = document.getElementById('fav-empty');
-  const favorites = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  
+  const favoriteIds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-  if (favorites.length === 0) {
+  // 1. Immediate check: If storage is empty, show message and STOP
+  if (favoriteIds.length === 0) {
     container.innerHTML = '';
-    emptyState.classList.remove('is-hidden');
+    container.classList.add('is-hidden'); // Ensure grid is hidden
+    emptyState.classList.remove('is-hidden'); // Show the "It appears..." text
     return;
   }
 
-  emptyState.classList.add('is-hidden');
-  
-  // Updated markup to use classes from exercises.css
-  const markup = favorites.map(item => `
-    <li class="exercise-card">
-      <div class="card-top">
-        <div class="workout-tag">WORKOUT</div>
-        <div style="display: flex; gap: 8px; margin-left: auto; align-items: center;">
-            <button class="delete-btn" data-id="${item._id}" aria-label="Remove from favorites" style="background:none; border:none; padding: 0; cursor:pointer;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-            <button class="start-btn" data-id="${item._id}">
-              Start ➔
-              <svg width="16" height="16"><use href="./img/sprite.svg#icon-arrow"></use></svg>
-            </button>
-        </div>
-      </div>
-      
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <h3 class="exercise-name">${item.name}</h3>
-      </div>
+  try {
+    const fetchPromises = favoriteIds.map(id => 
+      fetch(`${apiBase}/${id}`).then(res => res.ok ? res.json() : null)
+    );
+    
+    const favoritesData = (await Promise.all(fetchPromises)).filter(item => item !== null);
 
-      <div class="card-info">
-        <p>Burned calories: <span>${item.burnedCalories} / ${item.time} min</span></p>
-        <p>Body part: <span>${item.bodyPart}</span></p>
-        <p>Target: <span>${item.target}</span></p>
-      </div>
-    </li>
-  `).join('');
+    // 2. Secondary check: If API returns nothing for those IDs
+    if (favoritesData.length === 0) {
+      container.innerHTML = '';
+      container.classList.add('is-hidden');
+      emptyState.classList.remove('is-hidden');
+      return;
+    }
 
-  container.innerHTML = markup;
+    // 3. Success: Hide the empty message and show the grid
+    emptyState.classList.add('is-hidden');
+    container.classList.remove('is-hidden');
+    
+    const markup = favoritesData.map(item => createExerciseCardHtml(item, true)).join('');
+    container.innerHTML = markup;
+    
+    initDeleteListeners(); 
+  } catch (error) {
+    console.error("Error fetching favorites:", error);
+  }
 }
 
 function initDeleteListeners() {
   const container = document.getElementById('favorites-grid');
-  container.addEventListener('click', (e) => {
+  container.onclick = (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
-
-    const id = deleteBtn.dataset.id;
-    removeFromFavorites(id);
-  });
-}
-
-function updateHeaderActiveState() {
-  const homeLink = document.querySelector('a[href="./index.html"]');
-  const favLink = document.querySelector('a[href="./favorites.html"]');
-  
-  if (homeLink && favLink) {
-    homeLink.classList.remove('active');
-    favLink.classList.add('active');
-  }
+    removeFromFavorites(deleteBtn.dataset.id);
+  };
 }
 
 function removeFromFavorites(id) {
-  let favorites = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  favorites = favorites.filter(item => item._id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-  renderFavorites(); // Re-render the list immediately
+  let favoriteIds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  favoriteIds = favoriteIds.filter(favId => favId !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
+  
+  // Re-run the render logic immediately to update the UI
+  renderFavorites(); 
 }
