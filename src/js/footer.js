@@ -3,16 +3,21 @@ const BASE_URL = "https://your-energy.b.goit.study/api";
 
 const initSubscription = () => {
   const subscribeForm = document.querySelector('.subscribe-form');
-
-  if (!subscribeForm) return; // Guard clause
+  if (!subscribeForm) return;
 
   subscribeForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // This PREVENTS the page from jumping/reloading
+    e.preventDefault();
 
     const emailInput = subscribeForm.querySelector('input[type="email"]');
     const email = emailInput.value.trim();
-
-    if (!email) return;
+    
+    // ОБОВ'ЯЗКОВА ВАЛІДАЦІЯ ЗА КРИТЕРІЯМИ
+    const emailRegex = /^\w+(\.\w+)?@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+    
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address."); // Або красивий toast
+      return;
+    }
 
     try {
       const response = await fetch(`${BASE_URL}/subscription`, {
@@ -21,21 +26,17 @@ const initSubscription = () => {
         body: JSON.stringify({ email }),
       });
 
-      // Special handling for 409 Conflict
       if (response.status === 409) {
-        alert("This email is already subscribed.");
+        alert("This email is already subscribed."); // Повідомлення про помилку
         return;
       }
 
-      if (!response.ok) {
-        throw new Error("Server error");
-      }
+      if (!response.ok) throw new Error("Server error");
 
-      alert("Subscription successful!");
+      alert("Subscription successful!"); // Підтвердження підписки
       subscribeForm.reset();
     } catch (error) {
-      console.error("Subscription Error:", error);
-      alert("Something went wrong. Please try again.");
+      alert(error.message); // Вивід помилки
     }
   });
 };

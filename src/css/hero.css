@@ -1,6 +1,6 @@
 .hero-section {
   padding: 40px 0;
-  background-color: #f4f4f4; /* Light gray background from Figma */
+  background-color: #f4f4f4;
 }
 
 .hero-container {
@@ -31,9 +31,10 @@
   margin-top: -8px;
 }
 
+/* NO PLAYFAIR - Тільки DM Sans курсивом */
 .hero-title-italic {
   font-style: italic;
-  font-family: "Playfair Display", serif; /* Or similar serif from Figma */
+  font-family: "DM Sans", sans-serif; 
 }
 
 .hero-description {
@@ -85,59 +86,101 @@
   height: 100%;
   object-fit: cover;
   object-position: center 20%; 
-  transition: object-position 0.3s ease;
 }
 
 /* --- Tablet/Mobile Adjustments --- */
 @media (max-width: 768px) {
-  /* 1. Stack the main containers vertically */
   .hero-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
 
+  /* Текст стає першим */
   .hero-content {
     flex-direction: column;
     align-items: flex-start;
+    order: 1; 
   }
 
-  /* 2. HIDE the small picture as requested */
   .hero-mini-img {
     display: none;
   }
 
-  /* 3. Re-style the tags to sit BELOW the big image */
+  /* Велика картинка стає другою */
+  .hero-image-container {
+    order: 2; 
+    height: 300px;
+    margin-top: 20px;
+  }
+
+  /* ТЕГИ ТЕПЕР ТУТ - ТРЕТІМИ (ПІД КАРТИНКОЮ) */
   .hero-tags-wrapper {
     width: 100%;
-    order: 3; /* Moves this wrapper to the very bottom */
+    order: 3; 
     margin-top: 16px;
-    align-items: center; /* Centers hashtags horizontally */
+    align-items: center; 
   }
 
   .hero-tags-list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center; /* Centers the tags like in the intended image */
+    justify-content: center; 
     gap: 8px;
-  }
-
-  /* 4. Ensure the big image is in the middle of the stack */
-  .hero-image-container {
-    order: 2; /* Sits between the text and the hashtags */
-    height: 300px; /* Adjust height for mobile framing */
-    margin-top: 20px;
   }
 }
 
-/* --- Specific Mobile Tweak --- */
+@media (max-width: 768px) {
+  .hero-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Ця магія дозволяє order працювати на вкладені елементи */
+  .hero-content {
+    display: contents; 
+  }
+
+  /* 1. Текст */
+  .hero-text-wrapper {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* 2. Велика картинка (тепер точно посередині) */
+  .hero-image-container {
+    order: 2;
+    height: 300px;
+    margin-top: 0;
+  }
+
+  /* 3. Теги (тепер точно в самому низу) */
+  .hero-tags-wrapper {
+    order: 3;
+    width: 100%;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .hero-mini-img {
+    display: none;
+  }
+
+  .hero-tags-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 32px; /* Matches the smaller mobile heading */
-  }
-  
-  .hero-image-container {
-    height: 350px; /* Taller crop for narrow phone screens */
+    font-size: 32px;
   }
 }

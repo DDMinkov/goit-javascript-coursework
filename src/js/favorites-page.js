@@ -1,4 +1,4 @@
-import { createExerciseCardHtml } from './render-utils.js'; //
+import { createExerciseCardHtml } from './render-utils.js';
 
 const STORAGE_KEY = 'favorite-exercises';
 const apiBase = "https://your-energy.b.goit.study/api/exercises";
@@ -11,33 +11,42 @@ export async function renderFavorites() {
   const container = document.getElementById('favorites-grid');
   const emptyState = document.getElementById('fav-empty');
   
+  if (!container) return;
+
   const favoriteIds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-  // 1. Immediate check: If storage is empty, show message and STOP
-  if (favoriteIds.length === 0) {
+  const validIds = favoriteIds.filter(id => id && typeof id === 'string' && id.length > 5);
+
+  if (validIds.length === 0) {
     container.innerHTML = '';
-    container.classList.add('is-hidden'); // Ensure grid is hidden
-    emptyState.classList.remove('is-hidden'); // Show the "It appears..." text
+    container.classList.add('is-hidden');
+    if (emptyState) emptyState.classList.remove('is-hidden');
     return;
   }
 
   try {
-    const fetchPromises = favoriteIds.map(id => 
-      fetch(`${apiBase}/${id}`).then(res => res.ok ? res.json() : null)
+    const fetchPromises = validIds.map(id => 
+      fetch(`${apiBase}/${id}`)
+        .then(res => {
+          if (!res.ok) {
+            return null; 
+          }
+          return res.json();
+        })
+        .catch(() => null)
     );
     
-    const favoritesData = (await Promise.all(fetchPromises)).filter(item => item !== null);
+    const results = await Promise.all(fetchPromises);
+    const favoritesData = results.filter(item => item !== null);
 
-    // 2. Secondary check: If API returns nothing for those IDs
     if (favoritesData.length === 0) {
       container.innerHTML = '';
       container.classList.add('is-hidden');
-      emptyState.classList.remove('is-hidden');
+      if (emptyState) emptyState.classList.remove('is-hidden');
       return;
     }
 
-    // 3. Success: Hide the empty message and show the grid
-    emptyState.classList.add('is-hidden');
+    if (emptyState) emptyState.classList.add('is-hidden');
     container.classList.remove('is-hidden');
     
     const markup = favoritesData.map(item => createExerciseCardHtml(item, true)).join('');
@@ -45,16 +54,20 @@ export async function renderFavorites() {
     
     initDeleteListeners(); 
   } catch (error) {
-    console.error("Error fetching favorites:", error);
+    console.error("Critical error in renderFavorites:", error);
   }
 }
 
 function initDeleteListeners() {
   const container = document.getElementById('favorites-grid');
+  if (!container) return;
+  
   container.onclick = (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
-    removeFromFavorites(deleteBtn.dataset.id);
+    
+    const exerciseId = deleteBtn.dataset.id;
+    removeFromFavorites(exerciseId);
   };
 }
 
@@ -63,6 +76,5 @@ function removeFromFavorites(id) {
   favoriteIds = favoriteIds.filter(favId => favId !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
   
-  // Re-run the render logic immediately to update the UI
   renderFavorites(); 
 }

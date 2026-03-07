@@ -87,43 +87,53 @@
 .mobile-menu {
   position: fixed;
   top: 0; 
-  left: 0; /* Changed to left 0 for full width */
-  width: 100%; 
-  height: 100%;
+  right: 0;
+  width: 200px; /* Ширина за макетом */
+  height: 100vh; /* На всю висоту вікна */
   background-color: #242424; 
   z-index: 1000;
-  display: flex; /* Always flex so it can animate */
+  
+  /* Тепер це флекс-контейнер, який розштовхує елементи */
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* Навігація зверху/центр, соцмережі знизу */
+  align-items: center; /* Центруємо все по горизонталі */
+  
   padding: 40px 20px;
-  transform: translateY(-100%);
-  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(100%);
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   visibility: hidden; 
   pointer-events: none; 
 }
 
 .mobile-menu.is-open {
-  transform: translateY(0); /* Slide down to original position */
+  transform: translateX(0);
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
+/* Вирівнювання контенту всередині, щоб не злипалося */
 .mobile-nav {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: auto;
-  margin-top: auto;
+  align-items: center; /* Центруємо текст посилань */
+  justify-content: center;
+  flex-grow: 1; /* Займає вільний простір, щоб виштовхнути соцмережі вниз */
+  gap: 20px;
 }
 
 .mobile-nav-link {
   color: #F4F4F4;
-  font-size: 24px;
-  margin: 15px 0;
+  font-size: 14px; /* У макеті посилання зазвичай не величезні */
   text-decoration: none;
+  transition: color 250ms ease;
+}
+
+.mobile-nav-link.active {
+  color: #F4F4F4;
+  font-weight: 700; /* Або додавай підкреслення */
 }
 
 .mobile-menu-close {
@@ -141,6 +151,8 @@
   display: flex;
   gap: 12px;
   list-style: none;
+  margin-top: auto; /* Додатковий запобіжник */
+  padding-bottom: 20px; /* Відступ від краю екрану */
 }
 
 .mobile-socials a {
@@ -159,12 +171,6 @@
   display: flex;
   gap: 12px;
   list-style: none;
-  
-  /* Change 'auto' to a fixed margin to pull them up */
-  margin-top: 60px; 
-  
-  /* Add padding to ensure they aren't touching the very bottom */
-  padding-bottom: 60px; 
 }
 
 .mobile-socials a {

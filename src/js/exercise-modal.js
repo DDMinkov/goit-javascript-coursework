@@ -3,10 +3,31 @@ const STORAGE_KEY = 'favorite-exercises';
 const modal = document.querySelector('#exercise-modal');
 const ratingModal = document.querySelector('#rating-modal');
 
-// Select both the home grid and the favorites grid
 const exerciseGrid = document.querySelector('#exercise-grid') || document.querySelector('#favorites-grid');
 
 let currentExercise = null;
+
+// 1. Функція обробки Escape
+const handleEscKeyPress = (e) => {
+  if (e.key === 'Escape') {
+    // Якщо відкрита модалка рейтингу — закриваємо тільки її
+    if (ratingModal && !ratingModal.classList.contains('is-hidden')) {
+      ratingModal.classList.add('is-hidden');
+      return;
+    }
+    // Інакше закриваємо основну модалку
+    closeExerciseModal();
+  }
+};
+
+// 2. Універсальна функція закриття основної модалки
+function closeExerciseModal() {
+  if (!modal) return;
+  modal.classList.add('is-hidden');
+  document.body.style.overflow = 'auto';
+  // Видаляємо слухач, щоб він не висів у пам'яті
+  window.removeEventListener('keydown', handleEscKeyPress);
+}
 
 if (exerciseGrid) {
   exerciseGrid.addEventListener('click', async (e) => {
@@ -18,10 +39,15 @@ if (exerciseGrid) {
       const response = await fetch(`${apiBase}/${exerciseId}`);
       const data = await response.json();
       
-      currentExercise = data; // Store data for the favorite toggle
+      currentExercise = data;
       fillModal(data);
+      
       modal.classList.remove('is-hidden');
       document.body.style.overflow = 'hidden';
+      
+      // ДОДАЄМО слухача при відкритті
+      window.addEventListener('keydown', handleEscKeyPress);
+      
     } catch (error) {
       console.error("Failed to load exercise details:", error);
     }
@@ -32,7 +58,7 @@ function fillModal(data) {
   if (!modal) return;
   modal.querySelector('.js-exercise-img').src = data.gifUrl;
   modal.querySelector('.js-exercise-title').textContent = data.name;
-  modal.querySelector('.js-rating-value').textContent = data.rating.toFixed(1);
+  modal.querySelector('.js-rating-value').textContent = (typeof data.rating === 'object' ? data.rating.rate : data.rating).toFixed(1);
   modal.querySelector('.js-target').textContent = data.target;
   modal.querySelector('.js-bodyPart').textContent = data.bodyPart;
   modal.querySelector('.js-equipment').textContent = data.equipment;
@@ -41,7 +67,7 @@ function fillModal(data) {
   modal.querySelector('.js-description').textContent = data.description;
   
   renderStars(data.rating, modal.querySelector('.js-stars'));
-  updateFavoriteBtnState(); // Check if this should say "Add" or "Remove"
+  updateFavoriteBtnState();
 }
 
 function toggleFavorite() {
@@ -52,20 +78,16 @@ function toggleFavorite() {
   const index = favoriteIds.indexOf(exerciseId);
 
   if (index === -1) {
-    // Add only the ID
     favoriteIds.push(exerciseId);
   } else {
-    // Remove the ID
     favoriteIds.splice(index, 1);
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
   updateFavoriteBtnState();
 
-  // Refresh list if we are on the favorites page
   const favGrid = document.getElementById('favorites-grid');
   if (favGrid) {
-    // Instead of reload, just call the render function for a smoother feel
     import('./favorites-page.js').then(m => m.renderFavorites());
   }
 }
@@ -87,7 +109,7 @@ function updateFavoriteBtnState() {
 
 function renderStars(rating, container) {
   if (!container) return;
-  const roundedRating = Math.round(rating);
+  const roundedRating = Math.round(rating || 0);
   let starsHtml = '';
   for (let i = 1; i <= 5; i++) {
     const starColor = i <= roundedRating ? '#EEA10C' : 'rgba(244, 244, 244, 0.2)';
@@ -98,9 +120,9 @@ function renderStars(rating, container) {
 
 if (modal) {
   modal.addEventListener('click', (e) => {
+    // Використовуємо функцію закриття для кліків по хрестику або бекдропу
     if (e.target.closest('.modal-close-btn') || e.target === modal) {
-      modal.classList.add('is-hidden');
-      document.body.style.overflow = 'auto';
+      closeExerciseModal();
     }
 
     if (e.target.closest('.give-rating-btn')) {
@@ -124,7 +146,6 @@ if (ratingModal) {
   });
 
   if (ratingForm) {
-    // This consolidated listener handles the PATCH request and avoids "empty email" bugs
     ratingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -154,7 +175,6 @@ if (ratingModal) {
         alert("Thank you for your rating!");
         ratingModal.classList.add('is-hidden');
         ratingForm.reset();
-        // The main exercise modal remains open as requested!
       } catch (error) {
         alert(error.message);
       }
