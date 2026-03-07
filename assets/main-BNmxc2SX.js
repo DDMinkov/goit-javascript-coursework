@@ -4,17 +4,17 @@ import{a as H}from"./vendor-Dl2X3eg5.js";(function(){const t=document.createElem
         <div class="workout-tag">WORKOUT</div>
         ${t?`<button class="delete-btn" data-id="${e._id}" aria-label="Remove">
          <svg width="18" height="18">
-           <use href="/img/sprite.svg#icon-trash"></use>
+           <use href="./sprite-i_dQJi2u.svg#icon-trash"></use>
          </svg>
        </button>`:`<span class="rating">${n} 
          <svg width="18" height="18">
-           <use href="/img/sprite.svg#icon-ratestar"></use>
+           <use href="./sprite-i_dQJi2u.svg#icon-ratestar"></use>
          </svg>
        </span>`}
         <button class="start-btn" data-id="${e._id}" type="button">
           Start
           <svg width="16" height="16">
-            <use href="/img/sprite.svg#icon-arrow"></use>
+            <use href="./sprite-i_dQJi2u.svg#icon-arrow"></use>
           </svg>
         </button>
       </div>
@@ -22,7 +22,7 @@ import{a as H}from"./vendor-Dl2X3eg5.js";(function(){const t=document.createElem
       <div class="exercise-title-container">
         <div class="exercise-icon-container">
           <svg width="24" height="24">
-            <use href="/img/sprite.svg#icon-exec"></use>
+            <use href="./sprite-i_dQJi2u.svg#icon-exec"></use>
           </svg>
         </div>
         <h3 class="exercise-name">${r}</h3>
