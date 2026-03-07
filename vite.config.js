@@ -6,6 +6,8 @@ import SortCss from 'postcss-sort-media-queries';
 
 export default defineConfig(({ command }) => {
   return {
+    // Вказуємо шлях до репозиторію для GitHub Pages
+    base: '/goit-javascript-coursework/', 
     define: {
       [command === 'serve' ? 'global' : '_global']: {},
     },

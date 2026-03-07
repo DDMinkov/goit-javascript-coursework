@@ -18,6 +18,12 @@ let currentState = {
 };
 
 export async function initExercises() {
+  const filterList = document.getElementById('filter-list');
+  const exerciseGrid = document.getElementById('exercise-grid');
+  if (!filterList || !exerciseGrid) {
+    return; 
+  }
+  
   loadCategories(); // Initial load
 
   // 1. Filter Buttons
